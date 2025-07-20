@@ -100,34 +100,53 @@ export const changeMulti = async (req: Request, res: Response) => {
     const key: string = req.body.key;
     const value: string = req.body.value;
 
-   switch (key) {
-    case "status":
-      await Task.updateMany(
-        {
-          _id: { $in: ids },
-        },
-        {
-          status: value,
-        },
-      );
+    switch (key) {
+      case "status":
+        await Task.updateMany(
+          {
+            _id: { $in: ids },
+          },
+          {
+            status: value,
+          },
+        );
 
-      res.json({
-        code: 200,
-        message: "Cập nhật trạng thái thành công!",
-      });
-      break;
+        res.json({
+          code: 200,
+          message: "Cập nhật trạng thái thành công!",
+        });
+        break;
 
-    default:
-      res.json({
-        code: 400,
-        message: "Không tồn tại!",
-      });
-      break;
+      default:
+        res.json({
+          code: 400,
+          message: "Không tồn tại!",
+        });
+        break;
     }
   } catch (error) {
     res.json({
       code: 400,
       message: "Không tồn tại!"
+    });
+  }
+};
+
+// [POST] /api/v1/tasks/create
+export const create = async (req: Request, res: Response) => {
+  try {
+    const product = new Task(req.body);
+    const data = await product.save();
+
+    res.json({
+      code: 200,
+      message: "Tạo thành công!",
+      data: data
+    });
+  } catch (error) {
+    res.json({
+      code: 400,
+      message: "Lỗi!"
     });
   }
 };
