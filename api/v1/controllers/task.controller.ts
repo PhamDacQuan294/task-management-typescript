@@ -2,26 +2,32 @@ import { Request, Response }  from "express";
 import Task from "../models/task.model";
 
 export const index = async (req: Request, res: Response) => {
+  // Find
   interface Find {
     deleted: boolean,
     status?: string
   }
-
-  // const find = {
-  //    deleted: false,
-  // }
 
   const find: Find = {
      deleted: false,
   }
 
   if(req.query.status) {
-    // find["status"] = req.query.status; // Cách 1
     find.status = req.query.status.toString();
-
   }
 
-  const tasks = await Task.find(find);
+  // End find
+
+  // Sort
+  const sort = {};
+  
+  if(req.query.sortKey && req.query.sortValue) {
+    const sortKey = req.query.sortKey.toLocaleString();
+    sort[sortKey] = req.query.sortValue;
+  }
+  // End Sort
+
+  const tasks = await Task.find(find).sort(sort);
 
   res.json(tasks);
 }
